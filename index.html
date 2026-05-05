@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salary Slip Generator</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #0f766e;
+      --accent-2: #115e59;
+      --border: #d1d5db;
+      --danger: #b91c1c;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top right, #d1fae5 0%, #f4f6f8 50%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+      min-width: 0;
+    }
+
+    h1, h2 {
+      margin: 0 0 14px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      color: var(--accent-2);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    input {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      width: 100%;
+    }
+
+    .actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      transition: transform 0.15s ease, background 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--accent-2);
+      transform: translateY(-1px);
+    }
+
+    button.secondary {
+      background: #475569;
+    }
+
+    .note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    #error {
+      color: var(--danger);
+      font-size: 0.9rem;
+      margin-top: 10px;
+      min-height: 1.1em;
+    }
+
+    .slip {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      background: #fff;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .slip-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .company {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    #logoPreview {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      object-fit: contain;
+      object-position: center;
+      border: 1px solid var(--border);
+      display: none;
+      background: #ffffff;
+      padding: 3px;
+    }
+
+    .company-text {
+      min-width: 0;
+    }
+
+    .company-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      word-break: break-word;
+    }
+
+    .company-meta {
+      color: var(--muted);
+      font-size: 0.86rem;
+      word-break: break-word;
+      margin-top: 2px;
+    }
+
+    .slip-title {
+      font-weight: 700;
+      color: var(--accent-2);
+      white-space: nowrap;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      table-layout: fixed;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+
+    th {
+      background: #f0fdfa;
+      color: #134e4a;
+    }
+
+    .totals {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+
+    .totals div {
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      background: #f8fafc;
+    }
+
+    .strong {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 12px;
+      }
+
+      .app {
+        grid-template-columns: 1fr;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 14px;
+      }
+
+      .slip {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .meta, .totals {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 12mm;
+      }
+
+      * {
+        color: #000 !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+
+      body {
+        background: #fff;
+        padding: 0;
+        margin: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .panel:first-child {
+        display: none;
+      }
+
+      .app {
+        display: block;
+      }
+
+      .panel {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .slip {
+        border: 1px solid #000;
+        border-radius: 0;
+        padding: 8px;
+        width: calc(100% - 1mm);
+        max-width: none;
+        margin: 0;
+        box-shadow: none;
+        filter: grayscale(100%);
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #000;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel">
+      <h1>Salary Slip Generator</h1>
+      <p class="note">Enter net pay and company details. Gross and components are auto-calculated.</p>
+
+      <h2>Company Details</h2>
+      <div class="grid">
+        <div class="field">
+          <label for="companyName">Company Name</label>
+          <input id="companyName" type="text" placeholder="ABC Private Limited">
+        </div>
+        <div class="field">
+          <label for="companyPhone">Phone No.</label>
+          <input id="companyPhone" type="text" placeholder="+91 98765 43210">
+        </div>
+        <div class="field" style="grid-column: span 2;">
+          <label for="companyAddress">Address</label>
+          <input id="companyAddress" type="text" placeholder="123 Business Street, City">
+        </div>
+        <div class="field" style="grid-column: span 2;">
+          <label for="companyLogo">Company Logo</label>
+          <input id="companyLogo" type="file" accept="image/*">
+        </div>
+      </div>
+
+      <h2 style="margin-top: 18px;">Employee Details</h2>
+      <div class="grid">
+        <div class="field">
+          <label for="employeeName">Employee Name</label>
+          <input id="employeeName" type="text" placeholder="John Doe">
+        </div>
+        <div class="field">
+          <label for="employeeId">Employee ID</label>
+          <input id="employeeId" type="text" placeholder="EMP001">
+        </div>
+        <div class="field">
+          <label for="salaryMonth">Salary Month</label>
+          <input id="salaryMonth" type="month">
+        </div>
+        <div class="field">
+          <label for="desiredNetPay">Desired Monthly Net Pay</label>
+          <input id="desiredNetPay" type="number" min="1" step="0.01" placeholder="45000">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="generateBtn" type="button">Generate Slip</button>
+        <button id="downloadBtn" type="button" class="secondary">Download PDF</button>
+      </div>
+
+      <div id="error"></div>
+      <p class="note">PDF download opens print dialog. Choose "Save as PDF".</p>
+    </section>
+
+    <section class="panel">
+      <div id="slip" class="slip">
+        <div class="slip-head">
+          <div class="company">
+            <img id="logoPreview" alt="Company logo preview">
+            <div class="company-text">
+              <div id="outCompanyName" class="company-name">Your Company</div>
+              <div id="outCompanyAddress" class="company-meta">Address not provided</div>
+              <div id="outCompanyPhone" class="company-meta">Phone not provided</div>
+            </div>
+          </div>
+          <div class="slip-title">SALARY SLIP</div>
+        </div>
+
+        <div class="meta">
+          <div><span class="strong">Employee:</span> <span id="outEmployeeName">-</span></div>
+          <div><span class="strong">Employee ID:</span> <span id="outEmployeeId">-</span></div>
+          <div><span class="strong">Month:</span> <span id="outMonth">-</span></div>
+          <div><span class="strong">Generated On:</span> <span id="outGeneratedDate">-</span></div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Earnings</th>
+              <th>Amount (INR)</th>
+              <th>Deductions</th>
+              <th>Amount (INR)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Basic (40%)</td>
+              <td id="outBasic">0.00</td>
+              <td>Provident Fund (12% of Basic)</td>
+              <td id="outPf">0.00</td>
+            </tr>
+            <tr>
+              <td>HRA (20%)</td>
+              <td id="outHra">0.00</td>
+              <td>Professional Tax</td>
+              <td id="outPt">0.00</td>
+            </tr>
+            <tr>
+              <td>Special Allowance</td>
+              <td id="outSpecial">0.00</td>
+              <td>Other Deductions</td>
+              <td id="outOtherDeduction">0.00</td>
+            </tr>
+            <tr>
+              <td>Leave Travel Allowance</td>
+              <td id="outLta">0.00</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Reimbursement</td>
+              <td id="outReimbursement">0.00</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Uniform Allowance</td>
+              <td id="outUniformAllowance">0.00</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Professional Pursuits</td>
+              <td id="outProfessionalPursuits">0.00</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Telephone &amp; Internet Expenses</td>
+              <td id="outTelephoneInternet">0.00</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Variable Pay</td>
+              <td id="outVariablePay">0.00</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="totals">
+          <div><span class="strong">Gross Salary:</span> <span id="outGross">0.00</span></div>
+          <div><span class="strong">Total Deductions:</span> <span id="outDeductions">0.00</span></div>
+          <div class="strong" style="grid-column: span 2;">Net Pay: <span id="outNetPay">0.00</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "salarySlipGeneratorData";
+
+    const fields = {
+      companyName: document.getElementById("companyName"),
+      companyAddress: document.getElementById("companyAddress"),
+      companyPhone: document.getElementById("companyPhone"),
+      companyLogo: document.getElementById("companyLogo"),
+      employeeName: document.getElementById("employeeName"),
+      employeeId: document.getElementById("employeeId"),
+      salaryMonth: document.getElementById("salaryMonth"),
+      desiredNetPay: document.getElementById("desiredNetPay"),
+      error: document.getElementById("error")
+    };
+
+    const out = {
+      companyName: document.getElementById("outCompanyName"),
+      companyAddress: document.getElementById("outCompanyAddress"),
+      companyPhone: document.getElementById("outCompanyPhone"),
+      employeeName: document.getElementById("outEmployeeName"),
+      employeeId: document.getElementById("outEmployeeId"),
+      month: document.getElementById("outMonth"),
+      generatedDate: document.getElementById("outGeneratedDate"),
+      basic: document.getElementById("outBasic"),
+      hra: document.getElementById("outHra"),
+      special: document.getElementById("outSpecial"),
+      lta: document.getElementById("outLta"),
+      reimbursement: document.getElementById("outReimbursement"),
+      uniformAllowance: document.getElementById("outUniformAllowance"),
+      professionalPursuits: document.getElementById("outProfessionalPursuits"),
+      telephoneInternet: document.getElementById("outTelephoneInternet"),
+      variablePay: document.getElementById("outVariablePay"),
+      pf: document.getElementById("outPf"),
+      pt: document.getElementById("outPt"),
+      otherDeduction: document.getElementById("outOtherDeduction"),
+      gross: document.getElementById("outGross"),
+      deductions: document.getElementById("outDeductions"),
+      netPay: document.getElementById("outNetPay"),
+      logo: document.getElementById("logoPreview")
+    };
+
+    let savedLogoDataUrl = "";
+
+    function formatCurrency(value) {
+      return Number(value).toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatMonth(value) {
+      if (!value) return "-";
+      const [year, month] = value.split("-");
+      const date = new Date(Number(year), Number(month) - 1, 1);
+      return date.toLocaleString("en-IN", { month: "long", year: "numeric" });
+    }
+
+    function saveFormData() {
+      const data = {
+        companyName: fields.companyName.value,
+        companyAddress: fields.companyAddress.value,
+        companyPhone: fields.companyPhone.value,
+        employeeName: fields.employeeName.value,
+        employeeId: fields.employeeId.value,
+        salaryMonth: fields.salaryMonth.value,
+        desiredNetPay: fields.desiredNetPay.value,
+        logoDataUrl: savedLogoDataUrl
+      };
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadFormData() {
+      const rawData = localStorage.getItem(STORAGE_KEY);
+      if (!rawData) {
+        return;
+      }
+
+      try {
+        const data = JSON.parse(rawData);
+        fields.companyName.value = data.companyName || "";
+        fields.companyAddress.value = data.companyAddress || "";
+        fields.companyPhone.value = data.companyPhone || "";
+        fields.employeeName.value = data.employeeName || "";
+        fields.employeeId.value = data.employeeId || "";
+        fields.salaryMonth.value = data.salaryMonth || "";
+        fields.desiredNetPay.value = data.desiredNetPay || "";
+        savedLogoDataUrl = data.logoDataUrl || "";
+
+        if (savedLogoDataUrl) {
+          out.logo.src = savedLogoDataUrl;
+          out.logo.style.display = "block";
+        }
+      } catch (_error) {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
+    function updateSlip() {
+      const netPayInput = Number(fields.desiredNetPay.value);
+      const professionalTax = 200;
+      const otherDeduction = 0;
+      const fixedDeductions = professionalTax + otherDeduction;
+
+      if (!netPayInput || netPayInput <= 0) {
+        fields.error.textContent = "Please enter a valid desired net pay.";
+        return;
+      }
+
+      const gross = (netPayInput + fixedDeductions) / 0.952;
+
+      fields.error.textContent = "";
+
+      const basic = gross * 0.4;
+      const hra = gross * 0.2;
+      const lta = gross * 0.05;
+      const reimbursement = gross * 0.04;
+      const uniformAllowance = gross * 0.03;
+      const professionalPursuits = gross * 0.03;
+      const telephoneInternet = gross * 0.02;
+      const variablePay = gross * 0.08;
+      const pf = basic * 0.12;
+      const specialAllowance = gross * 0.15;
+
+      const totalDeductions = pf + professionalTax + otherDeduction;
+      const netPay = gross - totalDeductions;
+
+      out.companyName.textContent = fields.companyName.value.trim() || "Your Company";
+      out.companyAddress.textContent = fields.companyAddress.value.trim() || "Address not provided";
+      out.companyPhone.textContent = fields.companyPhone.value.trim() || "Phone not provided";
+      out.employeeName.textContent = fields.employeeName.value.trim() || "-";
+      out.employeeId.textContent = fields.employeeId.value.trim() || "-";
+      out.month.textContent = formatMonth(fields.salaryMonth.value);
+      out.generatedDate.textContent = new Date().toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+
+      out.basic.textContent = formatCurrency(basic);
+      out.hra.textContent = formatCurrency(hra);
+      out.special.textContent = formatCurrency(specialAllowance);
+      out.lta.textContent = formatCurrency(lta);
+      out.reimbursement.textContent = formatCurrency(reimbursement);
+      out.uniformAllowance.textContent = formatCurrency(uniformAllowance);
+      out.professionalPursuits.textContent = formatCurrency(professionalPursuits);
+      out.telephoneInternet.textContent = formatCurrency(telephoneInternet);
+      out.variablePay.textContent = formatCurrency(variablePay);
+      out.pf.textContent = formatCurrency(pf);
+      out.pt.textContent = formatCurrency(professionalTax);
+      out.otherDeduction.textContent = formatCurrency(otherDeduction);
+      out.gross.textContent = formatCurrency(gross);
+      out.deductions.textContent = formatCurrency(totalDeductions);
+      out.netPay.textContent = formatCurrency(netPay);
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", updateSlip);
+
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      const netPayInput = Number(fields.desiredNetPay.value);
+      if (!netPayInput || netPayInput <= 0) {
+        fields.error.textContent = "Generate the slip first by entering valid net pay.";
+        return;
+      }
+      fields.error.textContent = "";
+      updateSlip();
+      window.print();
+    });
+
+    fields.companyLogo.addEventListener("change", (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) {
+        out.logo.style.display = "none";
+        out.logo.src = "";
+        savedLogoDataUrl = "";
+        saveFormData();
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        out.logo.src = e.target && e.target.result ? String(e.target.result) : "";
+        savedLogoDataUrl = out.logo.src;
+        out.logo.style.display = out.logo.src ? "block" : "none";
+        saveFormData();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    fields.desiredNetPay.addEventListener("input", () => {
+      saveFormData();
+      if (Number(fields.desiredNetPay.value) > 0) {
+        updateSlip();
+      }
+    });
+
+    [
+      fields.companyName,
+      fields.companyAddress,
+      fields.companyPhone,
+      fields.employeeName,
+      fields.employeeId,
+      fields.salaryMonth
+    ].forEach((inputEl) => {
+      inputEl.addEventListener("input", () => {
+        saveFormData();
+        if (Number(fields.desiredNetPay.value) > 0) {
+          updateSlip();
+        }
+      });
+    });
+
+    loadFormData();
+    if (Number(fields.desiredNetPay.value) > 0) {
+      updateSlip();
+    }
+  </script>
+</body>
+</html>
