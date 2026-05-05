@@ -67,7 +67,7 @@
       max-width: 1100px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 20px;
     }
 
@@ -284,6 +284,13 @@
     .strong {
       font-weight: 700;
       color: #0f172a;
+    }
+
+    .slip-note {
+      margin-top: 12px;
+      font-size: 0.86rem;
+      color: #374151;
+      text-align: center;
     }
 
     @media (max-width: 900px) {
@@ -526,6 +533,8 @@
           <div><span class="strong">Total Deductions:</span> <span id="outDeductions">0.00</span></div>
           <div class="strong" style="grid-column: span 2;">Net Pay: <span id="outNetPay">0.00</span></div>
         </div>
+
+        <div class="slip-note">This is Computer Generated Sheet, does not require Signature.</div>
       </div>
     </section>
     </div>
@@ -575,6 +584,7 @@
     };
 
     let savedLogoDataUrl = "";
+    let isPdfDownloadInProgress = false;
 
     function formatCurrency(value) {
       return Number(value).toLocaleString("en-IN", {
@@ -618,6 +628,11 @@
     }
 
     function downloadPdfWithFilename() {
+      if (isPdfDownloadInProgress) {
+        return;
+      }
+
+      isPdfDownloadInProgress = true;
       const filename = buildPdfFilename();
       const slipEl = document.getElementById("slip");
       const printStyles = Array.from(document.querySelectorAll("style"))
@@ -645,8 +660,8 @@
     window.focus();
     setTimeout(() => window.print(), 80);
   <\/script>
-</body>
-</html>`;
+<\/body>
+<\/html>`;
 
       const blob = new Blob([printWindowMarkup], { type: "text/html" });
       const blobUrl = URL.createObjectURL(blob);
@@ -654,7 +669,8 @@
 
       if (!printWin) {
         URL.revokeObjectURL(blobUrl);
-        window.print();
+        fields.error.textContent = "Popup blocked. Please allow popups and click Download PDF again.";
+        isPdfDownloadInProgress = false;
         return;
       }
 
@@ -664,7 +680,10 @@
         // Some browsers restrict access with noopener; title is already set in markup.
       }
 
-      const cleanup = () => URL.revokeObjectURL(blobUrl);
+      const cleanup = () => {
+        URL.revokeObjectURL(blobUrl);
+        isPdfDownloadInProgress = false;
+      };
       printWin.addEventListener("beforeunload", cleanup, { once: true });
       setTimeout(cleanup, 120000);
     }
@@ -692,6 +711,26 @@
 
       try {
         const data = JSON.parse(rawData);
+
+        const suspiciousText = [
+          data.companyName,
+          data.companyAddress,
+          data.companyPhone,
+          data.employeeName,
+          data.employeeId
+        ]
+          .map((value) => String(value || "").toLowerCase())
+          .join(" ");
+
+        if (
+          suspiciousText.includes("const blob = new blob") ||
+          suspiciousText.includes("window.open(bloburl") ||
+          suspiciousText.includes("function updateslip")
+        ) {
+          localStorage.removeItem(STORAGE_KEY);
+          return;
+        }
+
         fields.companyName.value = data.companyName || "";
         fields.companyAddress.value = data.companyAddress || "";
         fields.companyPhone.value = data.companyPhone || "";
@@ -746,8 +785,7 @@
       out.employeeId.textContent = fields.employeeId.value.trim() || "-";
       out.month.textContent = formatMonth(fields.salaryMonth.value);
       out.generatedDate.textContent = new Date().toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
+        month: "long",
         year: "numeric"
       });
 
