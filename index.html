@@ -590,6 +590,85 @@
       return date.toLocaleString("en-IN", { month: "long", year: "numeric" });
     }
 
+    function slugifyFilenamePart(value, fallback) {
+      const cleaned = String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      return cleaned || fallback;
+    }
+
+    function buildPdfFilename() {
+      const monthValue = formatMonth(fields.salaryMonth.value);
+      const monthPart = monthValue === "-"
+        ? "month"
+        : slugifyFilenamePart(monthValue.replace(/\s+/g, "-"), "month");
+      const namePart = slugifyFilenamePart(fields.employeeName.value, "employee");
+      return `${monthPart}__${namePart}.pdf`;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function downloadPdfWithFilename() {
+      const filename = buildPdfFilename();
+      const slipEl = document.getElementById("slip");
+      const printStyles = Array.from(document.querySelectorAll("style"))
+        .map((styleEl) => styleEl.textContent || "")
+        .join("\n");
+
+      const printWindowMarkup = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(filename)}</title>
+  <style>${printStyles}</style>
+  <style>
+    body { padding: 0; margin: 0; background: #fff; }
+    .slip { margin: 0; }
+  </style>
+</head>
+<body>
+  ${slipEl.outerHTML}
+  <script>
+    window.addEventListener("afterprint", () => {
+      window.close();
+    });
+    window.focus();
+    setTimeout(() => window.print(), 80);
+  <\/script>
+</body>
+</html>`;
+
+      const blob = new Blob([printWindowMarkup], { type: "text/html" });
+      const blobUrl = URL.createObjectURL(blob);
+      const printWin = window.open(blobUrl, "_blank", "noopener,noreferrer");
+
+      if (!printWin) {
+        URL.revokeObjectURL(blobUrl);
+        window.print();
+        return;
+      }
+
+      try {
+        printWin.document.title = filename;
+      } catch (_error) {
+        // Some browsers restrict access with noopener; title is already set in markup.
+      }
+
+      const cleanup = () => URL.revokeObjectURL(blobUrl);
+      printWin.addEventListener("beforeunload", cleanup, { once: true });
+      setTimeout(cleanup, 120000);
+    }
+
     function saveFormData() {
       const data = {
         companyName: fields.companyName.value,
@@ -699,7 +778,7 @@
       }
       fields.error.textContent = "";
       updateSlip();
-      window.print();
+      downloadPdfWithFilename();
     });
 
     fields.companyLogo.addEventListener("change", (event) => {
