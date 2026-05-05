@@ -3,7 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Salary Slip Generator</title>
+  <title>Free Salary Slip Generator - Create Salary Slips Online</title>
+  <meta name="description" content="Create professional salary slips online with this free Salary Slip Generator. Enter company details, employee details, and net pay to generate and download a printable PDF.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="author" content="Salary Slip Generator">
+  <meta name="theme-color" content="#0f766e">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Free Salary Slip Generator - Create Salary Slips Online">
+  <meta property="og:description" content="Generate salary slips instantly from net pay, preview all components, and export a print-ready PDF.">
+  <meta property="og:locale" content="en_IN">
+  <meta property="twitter:card" content="summary">
+  <meta property="twitter:title" content="Free Salary Slip Generator - Create Salary Slips Online">
+  <meta property="twitter:description" content="Create accurate salary slips online and download as PDF in seconds.">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Salary Slip Generator",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any",
+      "description": "A free web app to generate salary slips from desired net pay with automatic component calculation and PDF export.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "inLanguage": "en-IN",
+      "browserRequirements": "Requires JavaScript enabled"
+    }
+  </script>
   <style>
     :root {
       --bg: #f4f6f8;
@@ -41,6 +69,26 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
+    }
+
+    .intro {
+      margin: 0 auto 20px;
+      max-width: 1100px;
+      color: #1e293b;
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .panel {
@@ -323,7 +371,12 @@
   </style>
 </head>
 <body>
-  <div class="app">
+  <main aria-label="Salary Slip Generator">
+    <section class="intro" aria-label="About Salary Slip Generator">
+      <p>Use this free Salary Slip Generator to create professional monthly salary slips online. Add company details, employee information, and net salary to auto-calculate earnings, deductions, gross salary, and print a clean PDF payslip.</p>
+    </section>
+
+    <div class="app">
     <section class="panel">
       <h1>Salary Slip Generator</h1>
       <p class="note">Enter net pay and company details. Gross and components are auto-calculated.</p>
@@ -378,6 +431,7 @@
     </section>
 
     <section class="panel">
+      <h2 class="visually-hidden">Salary Slip Preview</h2>
       <div id="slip" class="slip">
         <div class="slip-head">
           <div class="company">
@@ -472,7 +526,10 @@
         </div>
       </div>
     </section>
-  </div>
+    </div>
+  </main>
+
+  <noscript>This salary slip generator requires JavaScript to calculate salary components and generate printable output.</noscript>
 
   <script>
     const STORAGE_KEY = "salarySlipGeneratorData";
