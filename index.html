@@ -1,16 +1,19 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Free Salary Slip Generator - Create Salary Slips Online</title>
-  <meta name="description" content="Create professional salary slips online with this free Salary Slip Generator. Enter company details, employee details, and net pay to generate and download a printable PDF.">
+  <meta name="description"
+    content="Create professional salary slips online with this free Salary Slip Generator. Enter company details, employee details, and net pay to generate and download a printable PDF.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta name="author" content="Salary Slip Generator">
   <meta name="theme-color" content="#0f766e">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Free Salary Slip Generator - Create Salary Slips Online">
-  <meta property="og:description" content="Generate salary slips instantly from net pay, preview all components, and export a print-ready PDF.">
+  <meta property="og:description"
+    content="Generate salary slips instantly from net pay, preview all components, and export a print-ready PDF.">
   <meta property="og:locale" content="en_IN">
   <meta property="twitter:card" content="summary">
   <meta property="twitter:title" content="Free Salary Slip Generator - Create Salary Slips Online">
@@ -32,157 +35,62 @@
       "browserRequirements": "Requires JavaScript enabled"
     }
   </script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     :root {
-      --bg: #f4f6f8;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
       --accent: #0f766e;
       --accent-2: #115e59;
-      --border: #d1d5db;
-      --danger: #b91c1c;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      overflow-x: hidden;
+    html {
+      overflow-y: scroll;
+      scrollbar-gutter: stable;
     }
 
     body {
-      margin: 0;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: radial-gradient(circle at top right, #d1fae5 0%, #f4f6f8 50%);
-      color: var(--text);
-      min-height: 100vh;
+      background: #fefefe;
       padding: 24px;
     }
 
     .app {
-      max-width: 1100px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 991px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
     }
 
     .intro {
-      margin: 0 auto 20px;
       max-width: 1100px;
+      margin: 0 auto 20px;
       color: #1e293b;
       font-size: 0.98rem;
       line-height: 1.5;
     }
 
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    .panel {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-      padding: 20px;
-      min-width: 0;
-    }
-
-    h1, h2 {
-      margin: 0 0 14px;
-    }
-
-    h1 {
-      font-size: 1.4rem;
-    }
-
-    h2 {
-      font-size: 1.1rem;
+    .h2-accent {
       color: var(--accent-2);
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    label {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    input {
-      border: 1px solid var(--border);
+    #logoPreview {
+      width: 64px;
+      height: 64px;
       border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 0.95rem;
-      width: 100%;
-    }
-
-    .actions {
-      margin-top: 16px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      background: var(--accent);
-      color: #fff;
-      transition: transform 0.15s ease, background 0.2s ease;
-    }
-
-    button:hover {
-      background: var(--accent-2);
-      transform: translateY(-1px);
-    }
-
-    button.secondary {
-      background: #475569;
-    }
-
-    .note {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    #error {
-      color: var(--danger);
-      font-size: 0.9rem;
-      margin-top: 10px;
-      min-height: 1.1em;
+      object-fit: contain;
+      object-position: center;
+      border: 1px solid var(--bs-border-color);
+      display: none;
+      background: #ffffff;
+      padding: 3px;
     }
 
     .slip {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px;
-      background: #fff;
       max-width: 760px;
       margin: 0 auto;
     }
@@ -192,7 +100,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--bs-border-color);
       padding-bottom: 12px;
       margin-bottom: 14px;
     }
@@ -204,22 +112,6 @@
       min-width: 0;
     }
 
-    #logoPreview {
-      width: 64px;
-      height: 64px;
-      border-radius: 8px;
-      object-fit: contain;
-      object-position: center;
-      border: 1px solid var(--border);
-      display: none;
-      background: #ffffff;
-      padding: 3px;
-    }
-
-    .company-text {
-      min-width: 0;
-    }
-
     .company-name {
       font-weight: 700;
       font-size: 1.05rem;
@@ -227,7 +119,7 @@
     }
 
     .company-meta {
-      color: var(--muted);
+      color: var(--bs-secondary-color);
       font-size: 0.86rem;
       word-break: break-word;
       margin-top: 2px;
@@ -239,53 +131,6 @@
       white-space: nowrap;
     }
 
-    .meta {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
-      font-size: 0.9rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.92rem;
-      table-layout: fixed;
-    }
-
-    th, td {
-      border: 1px solid var(--border);
-      padding: 8px;
-      text-align: left;
-      overflow-wrap: anywhere;
-    }
-
-    th {
-      background: #f0fdfa;
-      color: #134e4a;
-    }
-
-    .totals {
-      margin-top: 10px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      font-size: 0.95rem;
-    }
-
-    .totals div {
-      border: 1px dashed var(--border);
-      border-radius: 8px;
-      padding: 8px;
-      background: #f8fafc;
-    }
-
-    .strong {
-      font-weight: 700;
-      color: #0f172a;
-    }
-
     .slip-note {
       margin-top: 12px;
       font-size: 0.86rem;
@@ -293,39 +138,22 @@
       text-align: center;
     }
 
-    @media (max-width: 900px) {
-      body {
-        padding: 12px;
-      }
+    .btn-teal {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
 
-      .app {
-        grid-template-columns: 1fr;
-        width: 100%;
-        max-width: 100%;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .panel {
-        padding: 14px;
-      }
-
-      .slip {
-        width: 100%;
-        max-width: 100%;
-      }
-
-      .meta, .totals {
-        grid-template-columns: 1fr;
-      }
+    .btn-teal:hover {
+      background: var(--accent-2);
+      border-color: var(--accent-2);
+      color: #fff;
     }
 
     @media print {
       @page {
-        size: A4;
-        margin: 12mm;
+        size: A4 landscape;
+        margin: 10mm;
       }
 
       * {
@@ -344,16 +172,17 @@
       }
 
       .intro,
-      .panel:first-child,
+      .no-print,
       noscript {
         display: none !important;
       }
 
-      .app {
-        display: block;
+      .app,
+      .d-flex {
+        display: block !important;
       }
 
-      .panel {
+      .card {
         border: none;
         box-shadow: none;
         padding: 0;
@@ -361,186 +190,297 @@
       }
 
       .slip {
-        border: 1px solid #000;
+        border: 2px solid #000;
         border-radius: 0;
-        padding: 8px;
-        width: calc(100% - 1mm);
+        padding: 10px;
+        width: 100%;
         max-width: none;
         margin: 0;
-        box-shadow: none;
         filter: grayscale(100%);
+      }
+
+      .slip-head {
+        border-bottom: 2px solid #000;
+        padding-bottom: 6px;
+        margin-bottom: 8px;
+        gap: 10px;
+      }
+
+      .slip-title {
+        font-size: 1.1rem;
+      }
+
+      .company-name {
+        font-size: 1rem;
+      }
+
+      .company-meta {
+        font-size: 0.78rem;
+        margin-top: 1px;
+      }
+
+      #logoPreview {
+        width: 48px;
+        height: 48px;
+      }
+
+      .meta-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 4px;
+        margin-bottom: 8px;
+        font-size: 0.82rem;
+      }
+
+      .meta-row > div {
+        flex: none !important;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.78rem;
+        table-layout: fixed;
       }
 
       table,
       th,
       td {
-        border: 1px solid #000;
+        border: 1px solid #000 !important;
+        padding: 3px 6px;
       }
+
+      th {
+        font-weight: 700;
+        text-align: left;
+        background: #e9ecef !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .totals-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 6px;
+        font-size: 0.85rem;
+      }
+
+      .totals-row > div {
+        flex: 1 1 auto;
+        border: 1px solid #000;
+        padding: 4px 6px;
+        border-radius: 0;
+        background: #f8f9fa !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .totals-row > div.fw-bold {
+        flex: 1 1 100%;
+        border: 2px solid #000;
+      }
+
+      .slip-note {
+        margin-top: 8px;
+        font-size: 0.74rem;
+        text-align: center;
+      }
+    }
+
+    .card {
+      border: none !important;
+    }
+
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgb(193, 193, 193);
+      border-radius: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: black;
+      border-radius: 6px;
     }
   </style>
 </head>
+
 <body>
   <main aria-label="Salary Slip Generator">
-    <section class="intro" aria-label="About Salary Slip Generator">
-      <p>Use this free Salary Slip Generator to create professional monthly salary slips online. Add company details, employee information, and net salary to auto-calculate earnings, deductions, gross salary, and print a clean PDF payslip.</p>
-    </section>
+    <div class="d-flex flex-wrap">
 
-    <div class="app">
-    <section class="panel">
-      <h1>Salary Slip Generator</h1>
-      <p class="note">Enter net pay and company details. Gross and components are auto-calculated.</p>
+      <section class="col-md-4 col-12 card no-print overflow-scroll px-4" style="max-height: 99vh;">
 
-      <h2>Company Details</h2>
-      <div class="grid">
-        <div class="field">
-          <label for="companyName">Company Name</label>
-          <input id="companyName" type="text" placeholder="ABC Private Limited">
+        <div class="row g-3">
+          <div class="col-12">
+            <label for="companyName" class="form-label">Company Name</label>
+            <input id="companyName" type="text" class="form-control" placeholder="ABC Private Limited">
+          </div>
+          <div class="col-12">
+            <label for="companyPhone" class="form-label">Phone No.</label>
+            <input id="companyPhone" type="text" class="form-control" placeholder="+91 98765 43210">
+          </div>
+          <div class="col-12">
+            <label for="companyAddress" class="form-label">Address</label>
+            <input id="companyAddress" type="text" class="form-control" placeholder="123 Business Street, City">
+          </div>
+          <div class="col-12">
+            <label for="companyLogo" class="form-label">Company Logo</label>
+            <input id="companyLogo" type="file" class="form-control" accept="image/*">
+          </div>
         </div>
-        <div class="field">
-          <label for="companyPhone">Phone No.</label>
-          <input id="companyPhone" type="text" placeholder="+91 98765 43210">
-        </div>
-        <div class="field" style="grid-column: span 2;">
-          <label for="companyAddress">Address</label>
-          <input id="companyAddress" type="text" placeholder="123 Business Street, City">
-        </div>
-        <div class="field" style="grid-column: span 2;">
-          <label for="companyLogo">Company Logo</label>
-          <input id="companyLogo" type="file" accept="image/*">
-        </div>
-      </div>
 
-      <h2 style="margin-top: 18px;">Employee Details</h2>
-      <div class="grid">
-        <div class="field">
-          <label for="employeeName">Employee Name</label>
-          <input id="employeeName" type="text" placeholder="John Doe">
+        <h2 class="h6 h2-accent mt-4">Employee Details</h2>
+        <div class="row g-3">
+          <div class="col-12">
+            <label for="employeeName" class="form-label">Employee Name</label>
+            <input id="employeeName" type="text" class="form-control" placeholder="John Doe">
+          </div>
+          <div class="col-12">
+            <label for="employeeId" class="form-label">Employee ID</label>
+            <input id="employeeId" type="text" class="form-control" placeholder="EMP001">
+          </div>
+          <div class="col-12">
+            <label for="salaryMonth" class="form-label">Salary Month</label>
+            <input id="salaryMonth" type="month" class="form-control">
+          </div>
+          <div class="col-12">
+            <label for="desiredNetPay" class="form-label">Desired Monthly Net Pay</label>
+            <input id="desiredNetPay" type="number" min="1" step="0.01" class="form-control" placeholder="45000">
+          </div>
         </div>
-        <div class="field">
-          <label for="employeeId">Employee ID</label>
-          <input id="employeeId" type="text" placeholder="EMP001">
-        </div>
-        <div class="field">
-          <label for="salaryMonth">Salary Month</label>
-          <input id="salaryMonth" type="month">
-        </div>
-        <div class="field">
-          <label for="desiredNetPay">Desired Monthly Net Pay</label>
-          <input id="desiredNetPay" type="number" min="1" step="0.01" placeholder="45000">
-        </div>
-      </div>
 
-      <div class="actions">
-        <button id="generateBtn" type="button">Generate Slip</button>
-        <button id="downloadBtn" type="button" class="secondary">Download PDF</button>
-      </div>
-
-      <div id="error"></div>
-      <p class="note">PDF download opens print dialog. Choose "Save as PDF".</p>
-    </section>
-
-    <section class="panel">
-      <h2 class="visually-hidden">Salary Slip Preview</h2>
-      <div id="slip" class="slip">
-        <div class="slip-head">
-          <div class="company">
-            <img id="logoPreview" alt="Company logo preview">
-            <div class="company-text">
-              <div id="outCompanyName" class="company-name">Your Company</div>
-              <div id="outCompanyAddress" class="company-meta">Address not provided</div>
-              <div id="outCompanyPhone" class="company-meta">Phone not provided</div>
+        <h2 class="h6 h2-accent mt-4">Deductions Options</h2>
+        <div class="row g-3">
+          <div class="col-12">
+            <div class="form-check">
+              <input id="includePf" type="checkbox" class="form-check-input" checked>
+              <label for="includePf" class="form-check-label">Provident Fund (12% of Basic)</label>
             </div>
           </div>
-          <div class="slip-title">SALARY SLIP</div>
+          <div class="col-12">
+            <div class="form-check">
+              <input id="includePt" type="checkbox" class="form-check-input" checked>
+              <label for="includePt" class="form-check-label">Professional Tax</label>
+            </div>
+          </div>
         </div>
 
-        <div class="meta">
-          <div><span class="strong">Employee:</span> <span id="outEmployeeName">-</span></div>
-          <div><span class="strong">Employee ID:</span> <span id="outEmployeeId">-</span></div>
-          <div><span class="strong">Month:</span> <span id="outMonth">-</span></div>
-          <div><span class="strong">Generated On:</span> <span id="outGeneratedDate">-</span></div>
+        <div class="d-flex gap-2 flex-wrap mt-4">
+          <button id="generateBtn" type="button" class="btn btn-teal">Generate Slip</button>
+          <button id="downloadBtn" type="button" class="btn btn-secondary">Download PDF</button>
         </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Earnings</th>
-              <th>Amount (INR)</th>
-              <th>Deductions</th>
-              <th>Amount (INR)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Basic (40%)</td>
-              <td id="outBasic">0.00</td>
-              <td>Provident Fund (12% of Basic)</td>
-              <td id="outPf">0.00</td>
-            </tr>
-            <tr>
-              <td>HRA (20%)</td>
-              <td id="outHra">0.00</td>
-              <td>Professional Tax</td>
-              <td id="outPt">0.00</td>
-            </tr>
-            <tr>
-              <td>Special Allowance</td>
-              <td id="outSpecial">0.00</td>
-              <td>Other Deductions</td>
-              <td id="outOtherDeduction">0.00</td>
-            </tr>
-            <tr>
-              <td>Leave Travel Allowance</td>
-              <td id="outLta">0.00</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>Reimbursement</td>
-              <td id="outReimbursement">0.00</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>Uniform Allowance</td>
-              <td id="outUniformAllowance">0.00</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>Professional Pursuits</td>
-              <td id="outProfessionalPursuits">0.00</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>Telephone &amp; Internet Expenses</td>
-              <td id="outTelephoneInternet">0.00</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>Variable Pay</td>
-              <td id="outVariablePay">0.00</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-          </tbody>
-        </table>
+        <div id="error" class="text-danger mt-2"></div>
+        <p class="form-text mt-2">PDF download opens print dialog. Choose "Save as PDF".</p>
+      </section>
 
-        <div class="totals">
-          <div><span class="strong">Gross Salary:</span> <span id="outGross">0.00</span></div>
-          <div><span class="strong">Total Deductions:</span> <span id="outDeductions">0.00</span></div>
-          <div class="strong" style="grid-column: span 2;">Net Pay: <span id="outNetPay">0.00</span></div>
+      <section class="card col">
+        <h2 class="visually-hidden">Salary Slip Preview</h2>
+        <div id="slip" class="slip">
+          <div class="slip-head">
+            <div class="company">
+              <img id="logoPreview" alt="Company logo preview">
+              <div>
+                <div id="outCompanyName" class="company-name">Your Company</div>
+                <div id="outCompanyAddress" class="company-meta">Address not provided</div>
+                <div id="outCompanyPhone" class="company-meta">Phone not provided</div>
+              </div>
+            </div>
+            <div class="slip-title">SALARY SLIP</div>
+          </div>
+
+          <div class="row row-cols-2 g-2 mb-3 meta-row">
+            <div class="col"><strong>Employee:</strong> <span id="outEmployeeName">-</span></div>
+            <div class="col"><strong>Employee ID:</strong> <span id="outEmployeeId">-</span></div>
+            <div class="col"><strong>Month:</strong> <span id="outMonth">-</span></div>
+            <div class="col"><strong>Generated On:</strong> <span id="outGeneratedDate">-</span></div>
+          </div>
+
+          <table class="table table-bordered table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Earnings</th>
+                <th>Amount (INR)</th>
+                <th>Deductions</th>
+                <th>Amount (INR)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="rowPf">
+                <td>Basic (40%)</td>
+                <td id="outBasic">0.00</td>
+                <td>Provident Fund (12% of Basic)</td>
+                <td id="outPf">0.00</td>
+              </tr>
+              <tr id="rowPt">
+                <td>HRA (20%)</td>
+                <td id="outHra">0.00</td>
+                <td>Professional Tax</td>
+                <td id="outPt">0.00</td>
+              </tr>
+              <tr>
+                <td>Special Allowance</td>
+                <td id="outSpecial">0.00</td>
+                <td>Other Deductions</td>
+                <td id="outOtherDeduction">0.00</td>
+              </tr>
+              <tr>
+                <td>Leave Travel Allowance</td>
+                <td id="outLta">0.00</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Reimbursement</td>
+                <td id="outReimbursement">0.00</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Uniform Allowance</td>
+                <td id="outUniformAllowance">0.00</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Professional Pursuits</td>
+                <td id="outProfessionalPursuits">0.00</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Telephone &amp; Internet Expenses</td>
+                <td id="outTelephoneInternet">0.00</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Variable Pay</td>
+                <td id="outVariablePay">0.00</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="row row-cols-1 row-cols-md-2 g-2 mt-2 totals-row">
+            <div class="col"><strong>Gross Salary:</strong> <span id="outGross">0.00</span></div>
+            <div class="col"><strong>Total Deductions:</strong> <span id="outDeductions">0.00</span></div>
+            <div class="col-12 fw-bold">Net Pay: <span id="outNetPay">0.00</span></div>
+          </div>
+
+          <div class="slip-note">This is Computer Generated Sheet, does not require Signature.</div>
         </div>
-
-        <div class="slip-note">This is Computer Generated Sheet, does not require Signature.</div>
-      </div>
-    </section>
+      </section>
     </div>
   </main>
 
-  <noscript>This salary slip generator requires JavaScript to calculate salary components and generate printable output.</noscript>
+  <noscript>This salary slip generator requires JavaScript to calculate salary components and generate printable
+    output.</noscript>
 
   <script>
     const STORAGE_KEY = "salarySlipGeneratorData";
@@ -554,7 +494,14 @@
       employeeId: document.getElementById("employeeId"),
       salaryMonth: document.getElementById("salaryMonth"),
       desiredNetPay: document.getElementById("desiredNetPay"),
+      includePf: document.getElementById("includePf"),
+      includePt: document.getElementById("includePt"),
       error: document.getElementById("error")
+    };
+
+    const rows = {
+      pf: document.getElementById("rowPf"),
+      pt: document.getElementById("rowPt")
     };
 
     const out = {
@@ -645,10 +592,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${escapeHtml(filename)}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>${printStyles}</style>
   <style>
     body { padding: 0; margin: 0; background: #fff; }
-    .slip { margin: 0; }
+    .slip { margin: 0; width: 100%; max-width: none; border: 2px solid #000; padding: 10px; }
+    .meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px; font-size: 0.82rem; }
+    .meta-row > div { flex: none; }
+    .totals-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; font-size: 0.85rem; }
+    .totals-row > div { flex: 1 1 auto; border: 1px solid #000; padding: 4px 6px; background: #f8f9fa; }
+    .totals-row > div.fw-bold { flex: 1 1 100%; border: 2px solid #000; }
+    .slip-head { border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 8px; gap: 10px; }
+    .slip-title { font-size: 1.1rem; }
+    .company-name { font-size: 1rem; }
+    .company-meta { font-size: 0.78rem; margin-top: 1px; }
+    #logoPreview { width: 48px; height: 48px; }
+    .table { font-size: 0.78rem; }
+    table, th, td { border: 1px solid #000 !important; padding: 3px 6px; }
+    th { background: #e9ecef !important; font-weight: 700; }
+    .slip-note { margin-top: 8px; font-size: 0.74rem; }
   </style>
 </head>
 <body>
@@ -697,6 +659,8 @@
         employeeId: fields.employeeId.value,
         salaryMonth: fields.salaryMonth.value,
         desiredNetPay: fields.desiredNetPay.value,
+        includePf: fields.includePf.checked,
+        includePt: fields.includePt.checked,
         logoDataUrl: savedLogoDataUrl
       };
 
@@ -738,6 +702,8 @@
         fields.employeeId.value = data.employeeId || "";
         fields.salaryMonth.value = data.salaryMonth || "";
         fields.desiredNetPay.value = data.desiredNetPay || "";
+        fields.includePf.checked = data.includePf !== undefined ? data.includePf : true;
+        fields.includePt.checked = data.includePt !== undefined ? data.includePt : true;
         savedLogoDataUrl = data.logoDataUrl || "";
 
         if (savedLogoDataUrl) {
@@ -751,7 +717,9 @@
 
     function updateSlip() {
       const netPayInput = Number(fields.desiredNetPay.value);
-      const professionalTax = 200;
+      const includePf = fields.includePf.checked;
+      const includePt = fields.includePt.checked;
+      const professionalTax = includePt ? 200 : 0;
       const otherDeduction = 0;
       const fixedDeductions = professionalTax + otherDeduction;
 
@@ -760,7 +728,9 @@
         return;
       }
 
-      const gross = (netPayInput + fixedDeductions) / 0.952;
+      const gross = includePf
+        ? (netPayInput + fixedDeductions) / 0.952
+        : (netPayInput + fixedDeductions);
 
       fields.error.textContent = "";
 
@@ -772,11 +742,14 @@
       const professionalPursuits = gross * 0.03;
       const telephoneInternet = gross * 0.02;
       const variablePay = gross * 0.08;
-      const pf = basic * 0.12;
+      const pf = includePf ? basic * 0.12 : 0;
       const specialAllowance = gross * 0.15;
 
       const totalDeductions = pf + professionalTax + otherDeduction;
       const netPay = gross - totalDeductions;
+
+      rows.pf.style.display = includePf ? "" : "none";
+      rows.pt.style.display = includePt ? "" : "none";
 
       out.companyName.textContent = fields.companyName.value.trim() || "Your Company";
       out.companyAddress.textContent = fields.companyAddress.value.trim() || "Address not provided";
@@ -839,6 +812,20 @@
       reader.readAsDataURL(file);
     });
 
+    fields.includePf.addEventListener("change", () => {
+      saveFormData();
+      if (Number(fields.desiredNetPay.value) > 0) {
+        updateSlip();
+      }
+    });
+
+    fields.includePt.addEventListener("change", () => {
+      saveFormData();
+      if (Number(fields.desiredNetPay.value) > 0) {
+        updateSlip();
+      }
+    });
+
     fields.desiredNetPay.addEventListener("input", () => {
       saveFormData();
       if (Number(fields.desiredNetPay.value) > 0) {
@@ -868,4 +855,5 @@
     }
   </script>
 </body>
+
 </html>
